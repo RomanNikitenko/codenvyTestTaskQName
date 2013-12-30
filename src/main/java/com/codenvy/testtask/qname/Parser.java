@@ -13,6 +13,9 @@ public class Parser {
 	
 	private static final String prefix_RegExp = "[" + XMLNameStartChar + "][" + XMLNameChar +"]*";
 
+	private boolean correspondName(String name){
+		return (correspondSimpleName(name) || correspondPrefixedName(name));
+	}
 	
 	private boolean correspondSimpleName(String simpleName) {
 		
