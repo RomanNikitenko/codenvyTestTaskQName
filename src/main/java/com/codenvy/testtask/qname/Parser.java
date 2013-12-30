@@ -1,5 +1,6 @@
 package com.codenvy.testtask.qname;
 
+
 public class Parser {
 
 	private static final String oneCharSimpleName_RegExp = "[^./:\\[\\]*'\"|\\s]";
@@ -13,7 +14,24 @@ public class Parser {
 	
 	private static final String prefix_RegExp = "[" + XMLNameStartChar + "][" + XMLNameChar +"]*";
 
-	private boolean correspondName(String name){
+	public QName parse(String name) throws IllegalNameException{
+
+		if (correspondSimpleName(name)) {
+			return new QName(name);
+		} else if (correspondPrefixedName(name)) {
+
+			int indexColon = name.lastIndexOf(":");
+
+			String prefix = getPrefixPartFromName(name, indexColon);
+			String localName = getLocalNamePartFromName(name, indexColon);
+
+			return new QName(prefix, localName, name);
+		} else
+			throw new IllegalNameException("The name '" + name
+					+ "' is not valid");
+	}
+	
+	public boolean correspondName(String name){
 		return (correspondSimpleName(name) || correspondPrefixedName(name));
 	}
 	
@@ -100,14 +118,21 @@ public class Parser {
 			return false;
 		} else {
 
-			String prefix = prefixedName.substring(0, indexColon);
-			String localName = prefixedName.substring(indexColon + 1,
-					prefixedName.length());
+			String prefix = getPrefixPartFromName(prefixedName, indexColon);
+			String localName = getLocalNamePartFromName(prefixedName, indexColon);
 
-			return (correspondPrefix(prefix) && correspondLocalName(localName));
+			return (correspondPrefix(prefix) && correspondLocalName(localName) );
 		}
 	}
 
+	private String getPrefixPartFromName(String name, int indexColon) {
+		return name.substring(0, indexColon);
+	}
+
+	private String getLocalNamePartFromName(String name, int indexColon) {
+		return name.substring(indexColon + 1, name.length());
+	}
+	
 	private boolean correspondPrefix(String prefix) {
 		return prefix.matches(prefix_RegExp);
 	}
