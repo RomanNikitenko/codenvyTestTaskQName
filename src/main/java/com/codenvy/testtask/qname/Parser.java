@@ -6,7 +6,7 @@ public class Parser {
 	private static final String oneCharSimpleName_RegExp = "[^./:\\[\\]*'\"|\\s]";
 	private static final String nonSpace_RegExp = "[^/:\\[\\]*'\"|\\s]";
 
-	private static final String XMLNameStartChar = ":_A-Za-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF" +
+	private static final String XMLNameStartChar = "_A-Za-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF" +
 			"\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF" +
 			"\\uF900-\\uFDCF\\uFDF0-\\uFFFD\\u10000-\\uEFFFF";
 	
@@ -20,7 +20,7 @@ public class Parser {
 			return new QName(name);
 		} else if (correspondPrefixedName(name)) {
 
-			int indexColon = name.lastIndexOf(":");
+			int indexColon = name.indexOf(":");
 
 			String prefix = getPrefixPartFromName(name, indexColon);
 			String localName = getLocalNamePartFromName(name, indexColon);
@@ -108,11 +108,7 @@ public class Parser {
 	
 	private boolean correspondPrefixedName(String prefixedName) {
 
-		/*
-		 * use the method lastIndexOf, because localName CAN NOT contain a
-		 * colon, and the prefix CAN contain a colon
-		 */
-		int indexColon = prefixedName.lastIndexOf(":");
+		int indexColon = prefixedName.indexOf(":");
 		
 		if (indexColon == (-1)) {
 			return false;
@@ -120,7 +116,7 @@ public class Parser {
 
 			String prefix = getPrefixPartFromName(prefixedName, indexColon);
 			String localName = getLocalNamePartFromName(prefixedName, indexColon);
-
+			
 			return (correspondPrefix(prefix) && correspondLocalName(localName) );
 		}
 	}
